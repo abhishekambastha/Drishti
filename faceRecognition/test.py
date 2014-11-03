@@ -21,3 +21,4 @@ for i in range (0, len(X)):
 	print (X[i].T).shape
 	print X[i].shape
 
+#images in X but in non linear form
