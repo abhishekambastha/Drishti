@@ -3,10 +3,15 @@ import cv2
 import os, sys
 import PIL.Image as Image
 
+
+##Edit Path as required !
+
 for dirname, dirnames, filenames in os.walk("/Users/abhi/projDrishti/faces"):
 	a=1;
 
 print "Face Database Location ",dirname
+
+## Populate the List X with 2D image arrays
 X,y = [],[]
 c=1
 for name in filenames:
@@ -17,12 +22,11 @@ for name in filenames:
 	y.append(c)
 	c = c+1
 
-#for i in range (0, len(X)):
-#	print (X[i].T).shape
-#	print X[i].shape
+print "Dimensions of single image", np.asarray(im).shape
+print "Dimensions of X", np.asarray(X).shape
 
-#images in X but in non linear form
 
+## Take the List of 2D images and return a List of long vectors u
 def asRowMatrix(X):
 	if len(X) == 0:
 		return np.array([])
@@ -31,25 +35,19 @@ def asRowMatrix(X):
 		mat = np.vstack((mat, np.asarray(row).reshape(1,-1)))
 	return mat
 
-def asColumnMatrix(X):
-	if len(X) == 0:
-		return np.array([])
-	mat = np.empty((X[0].size, 0), dtype=X[0].dtype)
-	for col in X:
-		mat = np.hstack((mat, np.asarray(col).reshape(-1,1)))
-	return mat
 
 
+## The Matrix Containing the rows of vectorised images, Y is actually A^T, refer notes!
 Y = asRowMatrix(X)
 
-print "Now Y as a Row (No. of Rows represent no of images)", Y.shape
+print "Dimension of Y", Y.shape
 
-#Returns the eigenvalues and eigenvectors
+## Compute eigenvalues and eigenvectors of the matrix C = X^T.X, Correlation Matrix 
 def pca(X, y, num_components=0):
-	[n,d] = X.shape
+	[n,d] = X.shape    #number of rows n is the number of images = no. of ppl x sample of each
 	if (num_components <= 0) or (num_components>n):
 		num_components = n
-	mu = X.mean(axis=0)
+	mu = X.mean(axis=0)  #sums up the rows
 	X = X - mu
 	if n>d:
 		C = np.dot(X.T,X)
