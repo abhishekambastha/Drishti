@@ -1,0 +1,78 @@
+import os, sys
+from PIL import Image
+import numpy as np
+
+## Let The Dimension of Image be M*N = imgDim
+## Let U be the vectorized image (coloumn vector)
+## Let A be [U1 U2 U2 .. ..... ..... Upn]  --horizontal stack of image coloumn vectors
+## Let number of sample be totalSamples = Pn
+## Let number of persons be P
+## Let model[i] be the list of model arrays i.e [U1 U2 U3 ... Un]
+
+
+
+
+def main():
+	path = "/Users/abhi/projDrishti/trainFaces"
+	modelImages(path)
+	pass
+
+
+############# Get Files Subdirectory Wise and separately! ##############
+def modelImages(path):
+
+	model = []
+	modelName=[]
+
+	##Get the file Locations
+	for dirname, dirnames, filenames in os.walk(path):
+		if dirnames == []:
+			model.append(filenames)
+			modelName.append(dirname)
+	X = []
+	Y = []
+
+	## Magic Number 77760 = MN
+	for i in range(len(modelName)):
+		#print modelName[i], "has ", len(model[i]), # "files namely ", model[i]
+		temp = np.empty((0, 77760), dtype=np.uint8)
+		print "", i
+		for names in model[i]:
+			modelImageLocation = modelName[i] + '/' + names
+			im = Image.open(modelImageLocation)
+			im.convert("L")
+			im = np.asarray(im,dtype=np.uint8)
+			im = im.flatten()
+			print "shape of im = ", im.shape ##concat here soemhow
+			temp = np.vstack((temp, im))
+			X[i].append(im)    ##want images instead of
+		Y.append(temp)
+
+	print "Number of models = ", len(X), " samples=" , len(X[1]) 
+
+	
+
+	i =1
+	univX = []
+
+	
+	print "univ is of ", univX[0].shape, len(univX)
+	print "Y is ", len(Y), Y[0].shape
+
+	imgDimension = Y[0].T.shape
+	A = np.empty((imgDimension[0],0))
+	print "null A ", A.shape
+	for imgs in Y:
+		print imgs.T.shape
+		A = np.hstack((A, imgs.T))
+
+	print "A", A.shape
+	#A = np.asarray(univX).T  
+	#print A
+	#print A.shape
+
+
+	
+	
+if __name__ == '__main__':
+	main()
