@@ -44,5 +44,17 @@ def getModelName(u, modelList, eVect):
 	res = distArray.argmin()
 	return res
 
+def normalize (X, low , high , dtype = None ):
+	X = np. asarray (X)
+	minX , maxX = np. min (X), np. max (X)
+	# normalize to [0...1].
+	X = X - float ( minX )
+	X = X / float (( maxX - minX ))
+	# scale to [ low ... high ].
+	X = X * (high - low )
+	X = X + low
+	if dtype is None :
+		return np. asarray (X)
+	return np. asarray (X, dtype = dtype )
 
 
