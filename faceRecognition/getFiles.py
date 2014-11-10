@@ -2,7 +2,7 @@
 import numpy as np 
 import os, sys
 from PIL import Image
-
+import pca
 
  #arbit
 
@@ -34,10 +34,24 @@ def getImageList(path):
 
 	return A.T, modelList, newIdentityList
 
+def populateModel(modelList, eVect):
+	
+	modelParameters = []
+	
+	#confusion in maths here
+	for i in range(len(modelList)):
+		modelParameters.append(np.dot(modelList[i].T, eVect))
+
+	print len(modelParameters)
+	print modelParameters[0].shape
+	return modelParameters  #return coefficients obtained!
 
 
-def getImageVector(queryLocation):
-	im = Image.open(queryLocation)
+
+
+
+def getImageVector(imageLocation):
+	im = Image.open(imageLocation)
 	im.convert("L")
 	im = np.asarray(im,dtype=np.uint8)
 	im = im.flatten()
@@ -46,6 +60,8 @@ def getImageVector(queryLocation):
 def main():
 	path = "/Users/abhi/projDrishti/trainFaces"
 	A, modelList,identityList = getImageList(path)
+	eVal, eVect = pca.PCA(A)
+	populateModel(modelList,eVect)
 	pass
 
 if __name__ == '__main__':
