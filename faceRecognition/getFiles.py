@@ -6,7 +6,7 @@ import pca
 
  #arbit
 
-##recurse till no subdir found and start reading files
+##recurse till no subdir found and start reading files-> populate A matrix , and separate modelList matrix
 def getImageList(path):
 
 	numberOfModels=0
@@ -34,24 +34,6 @@ def getImageList(path):
 
 	return A.T, modelList, newIdentityList
 
-def generateModels(modelList, eVect):
-	
-	modelParameters = []
-	
-	#confusion in maths here
-
-	print "evect", eVect.shape
-	print "imageList", modelList[0].T.shape
-	for i in range(len(modelList)):
-		modelParameters.append(np.dot(modelList[i].T, eVect))
-
-	print len(modelParameters)
-	print modelParameters[0].shape   # contains a for an image in a row, corresponding to 0 model
-	return modelParameters  #return coefficients obtained!
-
-
-
-
 
 def getImageVector(imageLocation):
 	im = Image.open(imageLocation)
@@ -60,11 +42,38 @@ def getImageVector(imageLocation):
 	im = im.flatten()
 	return im
 
+##for testing and debugging to be removed later
+def testImage(testLoc, model, eVect, identityList):
+	for dirname, dirnames, filenames in os.walk(testLoc):
+		a=0
+	testImageList = []
+	fName = []
+	for name in filenames:
+		s = dirname +"/" + name
+		try:
+			im = Image.open(s)
+			im.convert("L")
+			testImageList.append(np.asarray(im, dtype=np.uint8).ravel().T)
+			fName.append(name)
+		except IOError:
+			print "Cannot Open ", name
+
+	for i in range(len(testImageList)):
+		R = pca.getModelName(np.asarray(testImageList[i]), model, eVect)
+		print "Image" , fName[i], " identified as: ", identityList[R]
+
+
+
 def main():
 	path = "/Users/abhi/projDrishti/trainFaces"
+	query = "/Users/abhi/projDrishti/testFaces"
+
 	A, modelList,identityList = getImageList(path)
 	eVal, eVect = pca.PCA(A)
-	generateModels(modelList,eVect)
+	model = pca.generateModels(modelList,eVect)
+
+	testImage(query, model, eVect, identityList)
+
 	pass
 
 if __name__ == '__main__':

@@ -19,8 +19,28 @@ def generateModels(modelList, eVect):
 	for i in range(len(modelList)):
 		modelParameters.append(np.dot(modelList[i].T, eVect))
 
-	print len(modelParameters)
-	print modelParameters[0].shape   # contains a for an image in a row, corresponding to 0 model
+	#print len(modelParameters)
+	#print modelParameters[0].shape   # contains a for an image in a row, corresponding to 0 model
 	return modelParameters  #return coefficients obtained!
+
+def getModelName(u, modelList, eVect):
+
+	meanModel = []
+	for i in range(len(modelList)):
+		meanModel.append(modelList[i].mean(axis=0))
+
+	params = np.dot(u.T, eVect)
+
+	dist = []
+	for i in range (len(meanModel)):
+		a1 = meanModel[i]
+		a2 = params
+		d = np.linalg.norm(a1-a2)
+		dist.append(d)
+
+	distArray = np.asarray(dist)
+	res = distArray.argmin()
+	return res
+
 
 
