@@ -1,10 +1,23 @@
 import numpy as np
-import cv2
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
 
-img = cv2.imread('logo.png')
-print "Image Dimensions", img.shape
+mu, sigma = 00, 1
+x = mu + sigma*np.random.randn(10000)
 
-cv2.imshow('image',img[:20,:,1])
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-gauss = np.random.normal(0,1)
+# the histogram of the data
+n, bins, patches = plt.hist(x, 50, normed=True )
+
+print n.shape
+# add a 'best fit' line
+#y = mlab.normpdf(bins, mu, sigma)
+print bins.shape
+print bins.dtype
+print "Bins", bins
+#l = plt.plot(bins, bins )
+
+plt.xlabel('Smarts')
+plt.ylabel('Probability')
+plt.title(r'$\mathrm{Histogram\ of\ IQ:}\ \mu=0,\ \sigma=1$')
+plt.grid(True)
+plt.show()
