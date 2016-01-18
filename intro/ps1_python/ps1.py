@@ -10,6 +10,7 @@ def main():
     edges = cv2.Canny(img,100,200)
 
     show(edges)
+    cv2.imwrite('./output/edges.png', edges)
 
 def show(pic):
     cv2.imshow('image',pic);
